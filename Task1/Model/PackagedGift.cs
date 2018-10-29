@@ -4,7 +4,7 @@ namespace Task1.Model
 {
     class PackagedGift : Gift
     {
-        protected override void Open()
+        public override void Open()
         {
             Console.WriteLine("Package open");
         }
