@@ -1,1 +1,8 @@
-/.packages/
+
+EpamTask1 \.vs/
+
+EpamTask1/\.packages/
+
+EpamTask1/Task1\.Task1/bin
+
+EpamTask1/Task1\.Task1/obj
