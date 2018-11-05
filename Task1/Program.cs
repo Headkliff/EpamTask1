@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using Task1.Factory;
+using Task1.Factory.GiftFactory;
 using Task1.Model;
+using Task1.Model.Candy;
+using Task1.Model.Gift;
 
 namespace Task1
 {
     class Program
     {
         private static List<Gift> _gifts = new List<Gift>();
-        private static BoxFactory _boxFactory=new BoxFactory();
-        private static PackegeFactory _packageFactory=new PackegeFactory();
+        private static BoxGiftFactory _boxFactory=new BoxGiftFactory();
+        private static PackegedGiftFactory _packageFactory=new PackegedGiftFactory();
 
         static void Main(string[] args)
         {
@@ -23,7 +26,7 @@ namespace Task1
         private static void View()
         {
             Console.Clear();
-            Console.WriteLine("1-Create Gift \n2-Sort candies on gift \n3- Find candy by sugar\n4-Exit");
+            Console.WriteLine("1-Create Gift \n2-Sort candies on gift \n3-Find candy by sugar\n4-Exit");
 
             switch (Console.ReadLine())
             {
@@ -102,8 +105,29 @@ namespace Task1
 
         private static void SortBy()
         {
+            IList<ICandy> candies = null;
             var gift = Show();
-            var candies = gift.SortByParam(gift.Candies);
+            Console.WriteLine("Choose parameter for sort:\n 1-By Name\n 2-By Weight\n 3-By Calories\n 4-By Sugar");
+            var param = Console.ReadLine();
+            Console.WriteLine("Choose sort type:\n 1-Ascending\n 2-Descending");
+            var type = Convert.ToInt32(Console.ReadLine());
+
+            if (param != null && param.Equals("1"))
+            {
+                 candies= gift.SortByParam<ICandy>(candy => candy.Name, type);
+            }
+            if (param != null && param.Equals("2"))
+            {
+                candies = gift.SortByParam<ICandy>(candy => candy.Weight, type);
+            }
+            if (param != null && param.Equals("3"))
+            {
+                candies = gift.SortByParam<ICandy>(candy => candy.Calories, type);
+            }
+            if (param != null && param.Equals("4"))
+            {
+                candies = gift.SortByParam<ICandy>(candy => candy.Sugar, type);
+            }
 
             foreach (var item in candies)
             {
@@ -128,41 +152,47 @@ namespace Task1
                     Console.WriteLine("Enter the gift name");
                     name= Console.ReadLine();
 
-                    if (_gifts.Exists(x=>x.Name!=name))
+                    if (!_gifts.Exists(x => x.Name != name))
+                    {
+                        Console.WriteLine("Error: A gift with the same name already exists\nPress any key...");
+                        Console.ReadKey();
+                        CreateGift();
+                    }
+                    else
                     {
                         item = _boxFactory.Create(name);
                         _gifts.Add(item);
                         Console.Clear();
-                        Console.WriteLine($"Gift Info \n Name: {item.Name} \n Weight: {item.Weight} \nPress anu key ...");
+                        Console.WriteLine(
+                            $"Gift Info \n Name: {item.Name} \n Weight: {item.Weight} \nPress anu key ...");
                         Console.ReadKey();
                         View();
                     }
-                    else
+
+                    break;
+
+                case "2":
+                    Console.WriteLine("Enter the gift name");
+                    name = Console.ReadLine();
+                    if (!_gifts.Exists(x => x.Name != name))
                     {
                         Console.WriteLine("Error: A gift with the same name already exists\nPress any key...");
                         Console.ReadKey();
                         CreateGift();
                     }
-                    break;
-                case "2":
-                    Console.WriteLine("Enter the gift name");
-                    name = Console.ReadLine();
-                    if (_gifts.Exists(x => x.Name != name))
+                    else
                     {
                         item = _packageFactory.Create(name);
                         _gifts.Add(item);
                         Console.Clear();
-                        Console.WriteLine($"Gift Info \n Name: {item.Name} \n Weight: {item.Weight} \nPress anu key ...");
+                        Console.WriteLine(
+                            $"Gift Info \n Name: {item.Name} \n Weight: {item.Weight} \nPress anu key ...");
                         Console.ReadKey();
                         View();
                     }
-                    else
-                    {
-                        Console.WriteLine("Error: A gift with the same name already exists\nPress any key...");
-                        Console.ReadKey();
-                        CreateGift();
-                    }
+
                     break;
+
                 case "3":
                     View();
                     break;
